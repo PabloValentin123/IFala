@@ -71,11 +71,11 @@ a{
 .brand-mark{
     font-family:var(--font-mono);
     font-weight:700;
-    font-size:14px;
+    font-size:28px;
     letter-spacing:.08em;
     background:rgba(255,255,255,.12);
-    border:1px solid rgba(255,255,255,.35);
-    padding:8px 12px;
+    border:2px solid rgba(255,255,255,.35);
+    padding:5px 9px;
     border-radius:8px;
 }
 
@@ -269,5 +269,114 @@ footer{
     .nav-link{
         flex:1;
         text-align:center;
+    }
+}
+
+
+/* Filtro por categoria */
+.filtro-categoria{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:22px;
+}
+
+.filtro-categoria label{
+    display:block;
+    font-size:13px;
+    font-weight:700;
+    color:var(--green-800);
+    margin-bottom:8px;
+}
+
+.filtro-linha{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+}
+
+.filtro-linha select{
+    flex:1;
+    min-width:220px;
+    padding:11px 13px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    background:#fbfdfc;
+    color:var(--ink-900);
+}
+
+.filtro-linha button{
+    padding:11px 18px;
+    border:0;
+    border-radius:9px;
+    background:var(--green-700);
+    color:#fff;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.filtro-linha button:hover{
+    background:var(--green-900);
+}
+
+.limpar-filtro{
+    color:var(--green-700);
+    font-weight:600;
+    text-decoration:none;
+    padding:10px;
+}
+
+/* Votação */
+.votacao{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+    padding-top:15px;
+    border-top:1px solid var(--border);
+}
+
+.votacao form{
+    margin:0;
+}
+
+.vote-button{
+    border:1px solid var(--border);
+    background:#fff;
+    color:var(--ink-900);
+    border-radius:9px;
+    padding:8px 12px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.vote-button:hover{
+    border-color:var(--green-600);
+    background:var(--green-50);
+}
+
+.vote-button strong{
+    margin-left:4px;
+    font-family:var(--font-mono);
+}
+
+@media (max-width:640px){
+    .filtro-linha{
+        align-items:stretch;
+        flex-direction:column;
+    }
+
+    .filtro-linha select,
+    .filtro-linha button,
+    .limpar-filtro{
+        width:100%;
+        text-align:center;
+    }
+
+    .votacao{
+        flex-wrap:wrap;
     }
 }
