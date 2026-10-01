@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Painel Administrativo — Ouvidoria IFRN</title>
+<title>Painel Administrativo — IFala</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
 </head>
 <body>
@@ -21,13 +23,17 @@
 <header class="site-header">
     <div class="header-inner">
         <div class="brand">
-            <span class="brand-mark">IFRN</span>
+            <span class="brand-mark">IFala</span>
             <div class="brand-text">
                 <h1>Painel Administrativo</h1>
                 <p class="brand-sub">Gestão das reclamações da comunidade acadêmica</p>
             </div>
         </div>
-        <a href="/" class="voltar">← Voltar ao canal</a>
+
+        <div class="admin-actions">
+            <a href="/" class="voltar">← Voltar ao IFala</a>
+            <a href="/logout" class="sair">Sair</a>
+        </div>
     </div>
 </header>
 
@@ -39,6 +45,7 @@
                     <th>Reclamação</th>
                     <th>Categoria</th>
                     <th>Local</th>
+                    <th>Votos</th>
                     <th>Status</th>
                     <th>Atualizar status</th>
                     <th>Excluir</th>
@@ -54,6 +61,12 @@
                     </td>
                     <td><span class="tag tag--categoria">{{ r.categoria }}</span></td>
                     <td><span class="tag tag--local">{{ r.local }}</span></td>
+                    <td>
+                        <div class="votos-admin">
+                            <span>▲ {{ r.upvotes }}</span>
+                            <span>▼ {{ r.downvotes }}</span>
+                        </div>
+                    </td>
                     <td><span class="status status--{{ status_class.get(r.status, 'default') }}">{{ r.status }}</span></td>
                     <td>
                         <form class="status-form" action="/status/{{ r.id }}" method="POST">
@@ -75,7 +88,7 @@
                     </td>
                 </tr>
             {% else %}
-                <tr><td colspan="6" class="empty">Nenhuma reclamação registrada.</td></tr>
+                <tr><td colspan="7" class="empty">Nenhuma reclamação registrada.</td></tr>
             {% endfor %}
             </tbody>
         </table>
@@ -83,7 +96,7 @@
 </main>
 
 <footer>
-    <p>Instituto Federal do Rio Grande do Norte — Ouvidoria Anônima</p>
+    <p>Instituto Federal do Rio Grande do Norte — IFala</p>
 </footer>
 
 </body>
