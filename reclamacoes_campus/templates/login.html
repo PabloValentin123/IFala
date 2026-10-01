@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login — IFala</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+
+<main class="login-page">
+    <section class="login-card">
+        <div class="logo">IFala</div>
+        <h1>Acesso administrativo</h1>
+        <p class="subtitulo">Entre para gerenciar as reclamações do sistema.</p>
+
+        {% if erro %}
+            <div class="erro">{{ erro }}</div>
+        {% endif %}
+
+        <form method="POST" action="/login">
+            <label for="usuario">Usuário</label>
+            <input type="text" id="usuario" name="usuario" autocomplete="username" required>
+
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" autocomplete="current-password" required>
+
+            <button type="submit">Entrar</button>
+        </form>
+
+        <a class="voltar" href="/">← Voltar para o IFala</a>
+    </section>
+</main>
+
+<footer>
+    <p>Instituto Federal do Rio Grande do Norte — IFala</p>
+</footer>
+
+</body>
+</html>
