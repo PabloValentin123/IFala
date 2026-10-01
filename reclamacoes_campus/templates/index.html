@@ -3,10 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ouvidoria IFRN — Canal de Reclamações</title>
+<title>IFala — Canal de Reclamações</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
 </head>
 <body>
@@ -21,15 +23,16 @@
 <header class="site-header">
     <div class="header-inner">
         <div class="brand">
-            <span class="brand-mark">IFRN</span>
+            <span class="brand-mark">IF</span>
             <div class="brand-text">
-                <h1>Canal de Reclamações</h1>
+                <h1>IFala</h1>
                 <p class="brand-sub">Ouvidoria estudantil anônima do campus</p>
             </div>
         </div>
+
         <nav class="main-nav">
             <a href="/nova" class="nav-link nav-link--primary">Nova Reclamação</a>
-            <a href="/admin" class="nav-link">Painel Administrativo</a>
+            <a href="/login" class="nav-link">PAGINA ADMINISTRATIVA</a>
         </nav>
     </div>
 </header>
@@ -38,8 +41,28 @@
 
     <div class="list-head">
         <h2>Reclamações registradas</h2>
-        <p class="list-sub">Acompanhe, de forma pública e anônima, o status de cada reclamação enviada pela comunidade acadêmica.</p>
+        <p class="list-sub">
+            Acompanhe, de forma pública e anônima, o status de cada reclamação enviada pela comunidade acadêmica.
+        </p>
     </div>
+
+    <form class="filtro-categoria" method="GET" action="/">
+        <label for="categoria">Filtrar por categoria</label>
+        <div class="filtro-linha">
+            <select id="categoria" name="categoria">
+                <option value="Todas" {% if categoria_selecionada == 'Todas' %}selected{% endif %}>Todas as categorias</option>
+                {% for categoria in categorias %}
+                    <option value="{{ categoria }}" {% if categoria_selecionada == categoria %}selected{% endif %}>
+                        {{ categoria }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filtrar</button>
+            {% if categoria_selecionada != 'Todas' %}
+                <a class="limpar-filtro" href="/">Limpar</a>
+            {% endif %}
+        </div>
+    </form>
 
     <div class="feed">
     {% for r in reclamacoes %}
@@ -57,16 +80,32 @@
             </div>
 
             <p class="descricao">{{ r.descricao }}</p>
+
+            <div class="votacao">
+                <form action="/votar/{{ r.id }}/upvote" method="POST">
+                    <input type="hidden" name="next" value="{{ request.full_path }}">
+                    <button class="vote-button vote-up" type="submit" title="Concordo / considero útil">
+                        ▲ <span>Upvote</span> <strong>{{ r.upvotes }}</strong>
+                    </button>
+                </form>
+
+                <form action="/votar/{{ r.id }}/downvote" method="POST">
+                    <input type="hidden" name="next" value="{{ request.full_path }}">
+                    <button class="vote-button vote-down" type="submit" title="Discordo / considero pouco útil">
+                        ▼ <span>Downvote</span> <strong>{{ r.downvotes }}</strong>
+                    </button>
+                </form>
+            </div>
         </article>
     {% else %}
-        <p class="empty">Nenhuma reclamação registrada até o momento.</p>
+        <p class="empty">Nenhuma reclamação encontrada para esta categoria.</p>
     {% endfor %}
     </div>
 
 </main>
 
 <footer>
-    <p>Instituto Federal do Rio Grande do Norte — Canal Anônimo de Reclamações</p>
+    <p>Instituto Federal do Rio Grande do Norte — IFala</p>
 </footer>
 
 </body>
