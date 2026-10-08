@@ -1,0 +1,135 @@
+:root{
+    --green-950:#071F16;
+    --green-900:#0B2E20;
+    --green-700:#175C3D;
+    --green-600:#1F7A4D;
+    --green-50:#F1F6F3;
+    --gold-600:#B08D2B;
+    --ink-900:#152119;
+    --ink-600:#4C5F55;
+    --border:#DCE7E0;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter', Arial, sans-serif;
+    background:var(--green-50);
+    color:var(--ink-900);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+}
+
+.login-page{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+}
+
+.login-card{
+    width:100%;
+    max-width:430px;
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:38px;
+    box-shadow:0 10px 30px rgba(11,46,32,.10);
+}
+
+.logo{
+    display:inline-block;
+    background:var(--green-900);
+    color:#fff;
+    padding:8px 14px;
+    border-radius:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+h1{
+    font-family:'Barlow Semi Condensed', Arial, sans-serif;
+    font-size:30px;
+    color:var(--green-900);
+}
+
+.subtitulo{
+    color:var(--ink-600);
+    margin-top:7px;
+    margin-bottom:25px;
+    font-size:14px;
+    line-height:1.5;
+}
+
+label{
+    display:block;
+    margin:15px 0 7px;
+    font-size:14px;
+    font-weight:600;
+}
+
+input{
+    width:100%;
+    padding:13px 14px;
+    border:1px solid var(--border);
+    border-radius:9px;
+    font-size:15px;
+}
+
+input:focus{
+    outline:none;
+    border-color:var(--green-600);
+    box-shadow:0 0 0 3px rgba(31,122,77,.15);
+}
+
+button{
+    width:100%;
+    margin-top:24px;
+    padding:14px;
+    border:0;
+    border-radius:10px;
+    background:var(--green-700);
+    color:#fff;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+button:hover{
+    background:var(--green-900);
+}
+
+.erro{
+    background:#fdeceb;
+    border:1px solid #f3c8c4;
+    color:#9f241e;
+    padding:11px 12px;
+    border-radius:8px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.voltar{
+    display:block;
+    text-align:center;
+    margin-top:19px;
+    color:var(--green-700);
+    text-decoration:none;
+    font-weight:600;
+    font-size:14px;
+}
+
+footer{
+    background:var(--green-950);
+    color:rgba(255,255,255,.7);
+    text-align:center;
+    padding:20px;
+    font-size:13px;
+}
