@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Entrar — IFala</title>
+<title>Login — IFala</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,19 +16,16 @@
 <main class="login-page">
     <section class="login-card">
         <div class="logo">IFala</div>
-        <h1>Entrar</h1>
-        <p class="subtitulo">
-            Acesse com sua matrícula para registrar e votar em reclamações.
-            Seu nome não aparece para a comunidade, mas é visível para a administração.
-        </p>
+        <h1>Acesso administrativo</h1>
+        <p class="subtitulo">Entre para gerenciar as reclamações do sistema.</p>
 
         {% if erro %}
             <div class="erro">{{ erro }}</div>
         {% endif %}
 
-        <form method="POST" action="/entrar">
-            <label for="matricula">Matrícula</label>
-            <input type="text" id="matricula" name="matricula" autocomplete="username" required>
+        <form method="POST" action="/login">
+            <label for="usuario">Usuário</label>
+            <input type="text" id="usuario" name="usuario" autocomplete="username" required>
 
             <label for="senha">Senha</label>
             <input type="password" id="senha" name="senha" autocomplete="current-password" required>
@@ -36,7 +33,7 @@
             <button type="submit">Entrar</button>
         </form>
 
-        <a class="voltar" href="/cadastro">Ainda não tenho conta</a>
+        <a class="voltar" href="/">← Voltar para o IFala</a>
     </section>
 </main>
 
