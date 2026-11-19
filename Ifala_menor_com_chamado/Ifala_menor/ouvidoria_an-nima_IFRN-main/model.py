@@ -1,14 +1,13 @@
-
 import os
 import unicodedata
+import psycopg2
 import psycopg2.extras
 from psycopg2 import sql
+from dotenv import load_dotenv
 
-HOST = "localhost"
-PORT = "5432"
-DB_NAME = "campus"
-USER = "postgres"
-PASSWORD = "postgres"
+load_dotenv()
+
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Pasta das fotos anexadas (fica FORA de static/ e é servida pela rota /imagem).
 PASTA_UPLOADS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "uploads")
@@ -16,40 +15,14 @@ os.makedirs(PASTA_UPLOADS, exist_ok=True)
 
 
 def criar_banco():
-    conn = psycopg2.connect(
-        host=HOST,
-        port=PORT,
-        dbname="postgres",
-        user=USER,
-        password=PASSWORD
-    )
-    conn.autocommit = True
-    cur = conn.cursor()
-
-    cur.execute(
-        "SELECT 1 FROM pg_database WHERE datname = %s",
-        (DB_NAME,)
-    )
-
-    if cur.fetchone() is None:
-        cur.execute(
-            sql.SQL("CREATE DATABASE {}").format(
-                sql.Identifier(DB_NAME)
-            )
-        )
-
-    cur.close()
-    conn.close()
+    # No Neon, o banco de dados (neondb) já existe por padrão.
+    pass
 
 
 def conectar():
-    return psycopg2.connect(
-        host=HOST,
-        port=PORT,
-        dbname=DB_NAME,
-        user=USER,
-        password=PASSWORD
-    )
+    if not DATABASE_URL:
+        raise RuntimeError("A variável DATABASE_URL não foi encontrada no arquivo .env.")
+    return psycopg2.connect(DATABASE_URL)
 
 
 def criar_tabelas():
@@ -482,3 +455,4 @@ def excluir(id):
             os.remove(os.path.join(PASTA_UPLOADS, linha[0]))
         except FileNotFoundError:
             pass
+        
