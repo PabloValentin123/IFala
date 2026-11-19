@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IFala — Canal de Reclamações</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+</head>
+<body>
+
+{% set status_class = {
+    'Aberta': 'aberta',
+    'Em análise': 'analise',
+    'Em andamento': 'andamento',
+    'Resolvida': 'resolvida'
+} %}
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="brand">
+            <span class="brand-mark">IF</span>
+            <div class="brand-text">
+                <h1>IFala</h1>
+                <p class="brand-sub">Ouvidoria estudantil do campus — seu nome não aparece para a comunidade</p>
+            </div>
+        </div>
+
+        <nav class="main-nav">
+            <a href="/nova" class="nav-link nav-link--primary">Nova Reclamação</a>
+            <a href="/login" class="nav-link">PAGINA ADMINISTRATIVA</a>
+            <a href="/sair" class="nav-link">Sair</a>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <div class="list-head">
+        <h2>Reclamações registradas</h2>
+        <p class="list-sub">
+            Acompanhe, de forma pública, o status de cada reclamação enviada pela comunidade acadêmica.
+        </p>
+    </div>
+
+    <aside class="aviso-chamado" aria-label="Reclamações mais sérias">
+        <div class="aviso-chamado-texto">
+            <h3>Sua situação é mais séria?</h3>
+            <p>
+                O IFala serve para reclamações do dia a dia, como limpeza, estrutura e Wi-Fi.
+                Casos graves, como assédio, violência, discriminação, fraude ou risco à segurança,
+                devem ser registrados em um <strong>chamado oficial no SUAP</strong>, que é encaminhado
+                ao setor responsável. O botão ao lado leva a um passo a passo de como abrir esse chamado.
+            </p>
+        </div>
+        <a href="/chamado" class="botao-chamado">Como abrir um chamado</a>
+    </aside>
+
+    <form class="busca" method="GET" action="/" role="search">
+        <input type="hidden" name="categoria" value="{{ categoria_selecionada }}">
+        <input type="hidden" name="ordenar" value="{{ ordenar_selecionado }}">
+        <input
+            type="search"
+            name="q"
+            value="{{ busca }}"
+            placeholder="Pesquisar reclamações por título, descrição, local ou protocolo"
+            maxlength="100"
+            aria-label="Pesquisar reclamações">
+        <button type="submit">Pesquisar</button>
+        {% if busca %}
+            <a class="limpar-busca" href="{{ url_for('index', categoria=categoria_selecionada, ordenar=ordenar_selecionado) }}">Limpar</a>
+        {% endif %}
+    </form>
+
+    <form class="filtro-categoria" method="GET" action="/">
+        <input type="hidden" name="ordenar" value="{{ ordenar_selecionado }}">
+        {% if busca %}<input type="hidden" name="q" value="{{ busca }}">{% endif %}
+        <label for="categoria">Filtrar por categoria</label>
+        <div class="filtro-linha">
+            <select id="categoria" name="categoria">
+                <option value="Todas" {% if categoria_selecionada == 'Todas' %}selected{% endif %}>Todas as categorias</option>
+                {% for categoria in categorias %}
+                    <option value="{{ categoria }}" {% if categoria_selecionada == categoria %}selected{% endif %}>
+                        {{ categoria }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit">Filtrar</button>
+            {% if categoria_selecionada != 'Todas' %}
+                <a class="limpar-filtro" href="{{ url_for('index', ordenar=ordenar_selecionado, q=busca or None) }}">Limpar</a>
+            {% endif %}
+        </div>
+    </form>
+
+    <div class="feed-toolbar">
+        <span class="feed-total">
+            {{ reclamacoes|length }} reclamaç{{ 'ão' if reclamacoes|length == 1 else 'ões' }}{% if busca %} para “{{ busca }}”{% endif %}
+        </span>
+
+        <details class="ordenar" id="ordenar">
+            <summary class="ordenar-botao">
+                <span class="ordenar-rotulo">Ordenar por:</span>
+                {% for chave, texto in opcoes_ordenacao %}
+                    {% if chave == ordenar_selecionado %}<strong>{{ texto }}</strong>{% endif %}
+                {% endfor %}
+                <span class="ordenar-seta" aria-hidden="true">▾</span>
+            </summary>
+
+            <div class="ordenar-menu">
+                <p class="ordenar-titulo">Ordenar por</p>
+                {% for chave, texto in opcoes_ordenacao %}
+                    <a class="ordenar-item {% if chave == ordenar_selecionado %}ordenar-item--ativo{% endif %}"
+                       href="{{ url_for('index', categoria=categoria_selecionada, ordenar=chave, q=busca or None) }}">
+                        {{ texto }}
+                    </a>
+                {% endfor %}
+            </div>
+        </details>
+    </div>
+
+    <div class="feed">
+    {% for r in reclamacoes %}
+        <article class="card">
+            <div class="card-top">
+                <span class="protocol">Protocolo Nº {{ '%04d'|format(r.id) }}</span>
+                <span class="status status--{{ status_class.get(r.status, 'default') }}">{{ r.status }}</span>
+            </div>
+
+            <h3 class="titulo">{{ r.titulo }}</h3>
+
+            <div class="info">
+                <span class="tag tag--categoria">{{ r.categoria }}</span>
+                <span class="tag tag--local">{{ r.local }}</span>
+            </div>
+
+            <p class="descricao">{{ r.descricao }}</p>
+
+            {% if r.imagem %}
+                <a class="foto-box" href="{{ url_for('imagem', nome=r.imagem) }}" target="_blank" rel="noopener"
+                   style="--foto-url: url('{{ url_for('imagem', nome=r.imagem) }}')">
+                    <img class="foto" src="{{ url_for('imagem', nome=r.imagem) }}" alt="Foto anexada à reclamação" loading="lazy">
+                </a>
+            {% endif %}
+
+            <div class="votacao">
+                <form action="/votar/{{ r.id }}/upvote" method="POST">
+                    <input type="hidden" name="next" value="{{ request.full_path }}">
+                    <button class="vote-button vote-up" type="submit" title="Concordo / considero útil">
+                        ▲ <span>Upvote</span> <strong>{{ r.upvotes }}</strong>
+                    </button>
+                </form>
+
+                <form action="/votar/{{ r.id }}/downvote" method="POST">
+                    <input type="hidden" name="next" value="{{ request.full_path }}">
+                    <button class="vote-button vote-down" type="submit" title="Discordo / considero pouco útil">
+                        ▼ <span>Downvote</span> <strong>{{ r.downvotes }}</strong>
+                    </button>
+                </form>
+            </div>
+        </article>
+    {% else %}
+        <p class="empty">
+            {% if busca %}
+                Nenhuma reclamação encontrada para “{{ busca }}”.
+            {% else %}
+                Nenhuma reclamação encontrada para esta categoria.
+            {% endif %}
+        </p>
+    {% endfor %}
+    </div>
+
+</main>
+
+<footer>
+    <p>Instituto Federal do Rio Grande do Norte — IFala</p>
+</footer>
+
+<script>
+const menuOrdenar = document.getElementById("ordenar");
+
+document.addEventListener("click", function (e) {
+    if (menuOrdenar.open && !menuOrdenar.contains(e.target)) {
+        menuOrdenar.open = false;
+    }
+});
+
+document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        menuOrdenar.open = false;
+    }
+});
+</script>
+
+</body>
+</html>

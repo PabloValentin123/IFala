@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nova Reclamação — IFala</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='nova.css') }}">
+</head>
+<body>
+
+<header>
+    <h1>Nova Reclamação — IFala</h1>
+    <p class="brand-sub">Seu nome não aparece para a comunidade, mas é visível para a administração do IFala</p>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h2>Descreva a ocorrência</h2>
+
+        {% if erro %}
+            <p class="erro">{{ erro }}</p>
+        {% endif %}
+
+        <form action="/salvar" method="POST" enctype="multipart/form-data">
+
+            <!-- TÍTULO -->
+            <label for="titulo">Título</label>
+            <input
+                type="text"
+                id="titulo"
+                name="titulo"
+                placeholder="Resuma o problema em poucas palavras"
+                maxlength="100"
+                oninput="atualizarTitulo()"
+                required>
+
+            <span class="contador" id="contadorTitulo">0/100</span>
+
+            <!-- DESCRIÇÃO -->
+            <label for="descricao">Descrição</label>
+            <textarea
+                id="descricao"
+                name="descricao"
+                placeholder="Descreva o problema com o máximo de detalhes possível"
+                maxlength="600"
+                oninput="atualizarDescricao()"
+                required></textarea>
+
+            <span class="contador" id="contador">0/600</span>
+
+            <!-- CATEGORIA -->
+            <label for="categoria">Categoria</label>
+            <select id="categoria" name="categoria">
+                <option>Infraestrutura</option>
+                <option>Limpeza</option>
+                <option>Segurança</option>
+                <option>Wi-Fi</option>
+                <option>Outros</option>
+            </select>
+
+            <!-- LOCAL -->
+            <label for="local">Local do problema</label>
+            <input
+                type="text"
+                id="local"
+                name="local"
+                placeholder="Ex: Bloco B, Laboratório 3"
+                maxlength="100"
+                oninput="atualizarLocal()"
+                required>
+
+            <span class="contador" id="contadorLocal">0/100</span>
+
+            <!-- FOTO (OPCIONAL) -->
+            <label for="imagem">Foto (opcional)</label>
+            <input
+                type="file"
+                id="imagem"
+                name="imagem"
+                accept="image/jpeg,image/png,image/webp"
+                onchange="verificarImagem(this)">
+
+            <span class="dica">
+                Uma foto, até 5 MB. Evite mostrar rostos ou documentos de pessoas.
+                Os dados da foto (como localização) são removidos automaticamente.
+            </span>
+            <span class="mensagem" id="erroImagem"></span>
+
+            <button type="submit">Enviar Reclamação</button>
+
+        </form>
+
+        <a class="voltar" href="/">← Voltar ao canal</a>
+    </div>
+</div>
+
+<footer>
+    <p>Instituto Federal do Rio Grande do Norte — IFala — Canal de Reclamações</p>
+</footer>
+
+<script>
+function atualizarTitulo() {
+    const titulo = document.getElementById("titulo");
+    document.getElementById("contadorTitulo").textContent =
+        titulo.value.length + "/100";
+}
+
+function atualizarDescricao() {
+    const descricao = document.getElementById("descricao");
+    document.getElementById("contador").textContent =
+        descricao.value.length + "/600";
+}
+
+function atualizarLocal() {
+    const local = document.getElementById("local");
+    document.getElementById("contadorLocal").textContent =
+        local.value.length + "/100";
+}
+
+function verificarImagem(input) {
+    const aviso = document.getElementById("erroImagem");
+    aviso.style.display = "none";
+
+    const arquivo = input.files[0];
+    if (arquivo && arquivo.size > 5 * 1024 * 1024) {
+        aviso.textContent = "A foto é muito grande. O limite é 5 MB.";
+        aviso.style.display = "block";
+        input.value = "";
+    }
+}
+
+window.onload = function () {
+    atualizarTitulo();
+    atualizarDescricao();
+    atualizarLocal();
+};
+</script>
+
+</body>
+</html>
