@@ -5,10 +5,13 @@ from flask import (
 from PIL import Image, UnidentifiedImageError
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
+from dotenv import load_dotenv
 import hashlib
 import uuid
 import os
 import model
+
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = "IFALA-SECRET-KEY-TROQUE-EM-PRODUCAO"
@@ -25,10 +28,9 @@ OPCOES_ORDENACAO = [
     ("recentes", "Mais recentes"),
 ]
 
-# Credenciais simples para o projeto acadêmico.
-# Em produção, use variáveis de ambiente e senhas com hash.
-ADMIN_USUARIO = "admin"
-ADMIN_SENHA = "1234"
+# Credenciais do administrador carregadas do arquivo .env.
+ADMIN_USUARIO = os.getenv("ADMIN_USUARIO")
+ADMIN_SENHA = os.getenv("ADMIN_SENHA")
 
 model.criar_banco()
 model.criar_tabelas()
@@ -229,7 +231,7 @@ def login():
         usuario = request.form.get("usuario", "").strip()
         senha = request.form.get("senha", "")
 
-        if usuario == ADMIN_USUARIO and senha == ADMIN_SENHA:
+        if ADMIN_USUARIO and ADMIN_SENHA and usuario == ADMIN_USUARIO and senha == ADMIN_SENHA:
             session["admin_logado"] = True
             return redirect(url_for("admin"))
 
