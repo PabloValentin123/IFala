@@ -3,3 +3,4 @@ gunicorn
 psycopg[binary]
 Pillow
 python-dotenv
+psycopg2
